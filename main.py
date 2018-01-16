@@ -1,4 +1,3 @@
-spy_rating = 0.0
 spy_is_online = False
 
 
@@ -15,27 +14,40 @@ def get_name():
 def get_age():
     """ Get Spy Age  """
     global spy_age
-    spy_age = int(input("Enter your age: "))
+    try:
+        spy_age = int(input("Enter your age: "))
+    except Exception:
+        print("Error age not valid", end='\nEnter Age Again\n')
+        get_age()
+
+
+def get_rating():
+    """ Get Spy Rating  """
+    global spy_rating
+    try:
+        spy_rating = float(input("Please enter your spy rating between 0 to 5 : "))
+    except Exception:
+        print("Rating not valid", end='\nPlease try Again\n')
+        get_rating()
 
 
 get_name()
 
-spy_name = spy_salutation + " " + spy_name + " "
+spy_full_name = spy_salutation + " " + spy_name.capitalize() + " "
 
 # Repeat until user enter valid name
 while sy_nm_len == 0 and sy_sa_len == 0:
     print("Incorrect Values enter name and salutation again", end='\n')
     get_name()
 else:
-    print("Alright " + spy_name.capitalize() + " I'd like to know a little bit more about...", end='\n')
+    print("Alright " + spy_full_name.capitalize() + " I'd like to know a little bit more about...", end='\n')
 
 get_age()
 
 # Check Spy Age
 if 12 < spy_age < 50:
     print("Valid Spy, Welcome!")
-
-    spy_rating = float(input("Please enter your spy rating between 0 to 5 : "))
+    get_rating()
 
     if spy_rating > 4.5:
         print('Great ace!')
@@ -50,7 +62,7 @@ if 12 < spy_age < 50:
     spy_is_online = True
 
     # Authentication Complete
-    print("Authentication Complete.Welcome %s,age: %d,rating : %.2f." % (spy_name, spy_age, spy_rating))
+    print("Authentication Complete. Welcome %s, age: %d, rating : %.2f." % (spy_name, spy_age, spy_rating))
 
 else:
     print("Sorry You are not of the proper age to enter the spy community!")
