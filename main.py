@@ -1,5 +1,15 @@
 import spy_details
 
+STATUS_MESSAGES = ['My name is Bond, James Bond', 'Shaken, not stirred.', 'Keeping the British end up, Sir']
+current_status_message = ""
+friends = []
+new_friend = {
+        'name': '',
+        'salutation': '',
+        'age': 0,
+        'rating': 0.0
+    }
+
 
 def get_name():
     """ Get Spy Name """
@@ -28,6 +38,7 @@ def get_age():
     except Exception:
         print("Error age not valid", end='\nEnter Age Again\n')
         get_age()
+    check_age()
 
 
 def get_rating():
@@ -67,21 +78,43 @@ def check_age():
 
         spy_is_online = True
     else:
-        # print("Sorry You are not of the proper age to enter the spy community!")
-        show_error()
+        print("Sorry You are not of the proper age to enter the spy community!\n Enter age bw 12 to 50")
+        get_age()
 
 
 def add_status():
-    print("Status\n")
+    global status_msg
+    status_msg = input("Enter status: ")
+    print("status updated")
+    start_chat(spy_full_name, spy_age, spy_rating)
+
+
+def view_status():
+    if len(spy_salutation) > 0:
+        print("Your status is " + status_msg)
+    else:
+        print("No status updated please add new status")
+        add_status()
 
 
 def add_friend():
-    print("Friend\n")
+
+    new_friend['name'] = input("Please add your friend's name: ")
+    new_friend['salutation'] = input("Are they Mr. or Ms.?: ")
+
+    new_friend['name'] = new_friend['salutation'] + " " + new_friend['name']
+
+    new_friend['age'] = input("Age?")
+
+    new_friend['rating'] = input("Spy rating?")
+
+    friends.append(new_friend)
+    print('Friend Added!')
+
+    print('You have %d friends' % len(friends))
 
 
 def start_chat(name, age, rating):
-
-    current_status_message = None
 
     # Authentication Complete
     print("Authentication Complete. Welcome %s, age: %d, rating : %.2f." % (name, age, rating))
@@ -92,8 +125,9 @@ def start_chat(name, age, rating):
 
     ch = input(menu_choices)
 
-    options = {0: add_status,
-               1: add_friend,
+    options = {1: add_status,
+               2: add_friend,
+               3: view_status
                }
     options[int(ch)]()
 
@@ -108,10 +142,6 @@ else:
 
     get_age()
 
-    check_age()
+    # check_age()
 
-    if error is False:
-        start_chat(spy_full_name, spy_age, spy_rating)
-
-
-
+    start_chat(spy_full_name, spy_age, spy_rating)
