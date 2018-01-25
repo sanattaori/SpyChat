@@ -75,9 +75,8 @@ def add_status():
     print("Status\n")
 
 
-def add_freind():
-    print("Freind\n")
-
+def add_friend():
+    print("Friend\n")
 
 
 def start_chat(name, age, rating):
@@ -94,7 +93,7 @@ def start_chat(name, age, rating):
     ch = input(menu_choices)
 
     options = {0: add_status,
-               1: add_freind,
+               1: add_friend,
                }
     options[int(ch)]()
 
@@ -110,6 +109,7 @@ else:
     get_age()
 
     check_age()
+
     if error is False:
         start_chat(spy_full_name, spy_age, spy_rating)
 
