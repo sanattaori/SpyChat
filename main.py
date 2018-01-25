@@ -1,4 +1,4 @@
-import spy_details
+from spy_details import spy_name, spy_salutation, spy_rating, spy_age, spy_is_online
 
 STATUS_MESSAGES = ['My name is Bond, James Bond', 'Shaken, not stirred.', 'Keeping the British end up, Sir']
 current_status_message = ""
@@ -86,12 +86,13 @@ def add_status():
     global status_msg
     status_msg = input("Enter status: ")
     print("status updated")
-    start_chat(spy_full_name, spy_age, spy_rating)
+    start_chat(spy_name, spy_age, spy_rating)
 
 
 def view_status():
     if len(spy_salutation) > 0:
         print("Your status is " + status_msg)
+        start_chat(spy_name, spy_age, spy_rating)
     else:
         print("No status updated please add new status")
         add_status()
@@ -113,35 +114,53 @@ def add_friend():
 
     print('You have %d friends' % len(friends))
 
+    start_chat(spy_name, spy_age, spy_rating)
+
+
+def send_msg():
+    item_number = 0
+    for friend in friends:
+        print("%d %s"% (item_number + 1, friend['name']))
+        item_number = item_number + 1
+    print("select freind")
+
 
 def start_chat(name, age, rating):
 
     # Authentication Complete
-    print("Authentication Complete. Welcome %s, age: %d, rating : %.2f." % (name, age, rating))
+    # print("Authentication Complete. Welcome %s, age: %d, rating : %.2f." % (name, age, rating))
 
     # Show Menu
     menu_choices = "What do you want to do? \n 1. Add a status update \n 2. Add a friend \n 3. Send a secret message " \
-                   "\n 4. Read a secret message \n 5. Read Chats from a user \n 6. Close Application \n "
+                   "\n 4. Read a secret message \n 5. Read Chats from a user \n 6. View Status \n "
 
     ch = input(menu_choices)
 
     options = {1: add_status,
                2: add_friend,
-               3: view_status
+               3: send_msg,
+               6: view_status,
+
                }
     options[int(ch)]()
 
 
-question = "Do you want to continue as " + spy_details.spy_salutation + " " + spy_details.spy_name + " (Y/N)? "
+question = "Do you want to continue as " + spy_salutation + " " + spy_name + " (Y/N)? "
 existing = input(question)
 print(existing)
 if existing == "Y" or existing == "y":
-    start_chat(spy_details.spy_name, spy_details.spy_age, spy_details.spy_rating)
+    start_chat(spy_name, spy_age, spy_rating)
 else:
+    spy_name = ''
+    spy_salutation = ''
+    spy_age = 0
+    spy_rating = 0.0
+    spy_is_online = False
+
     get_name()
 
     get_age()
 
     # check_age()
 
-    start_chat(spy_full_name, spy_age, spy_rating)
+    start_chat(spy_name, spy_age, spy_rating)
