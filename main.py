@@ -1,4 +1,6 @@
 from spy_details import spy_name, spy_salutation, spy_rating, spy_age, spy_is_online
+from steganography.steganography import Steganography
+from datetime import datetime
 
 STATUS_MESSAGES = ['My name is Bond, James Bond', 'Shaken, not stirred.', 'Keeping the British end up, Sir']
 current_status_message = ""
@@ -7,7 +9,8 @@ new_friend = {
         'name': '',
         'salutation': '',
         'age': 0,
-        'rating': 0.0
+        'rating': 0.0,
+        'chats': []
     }
 
 
@@ -117,12 +120,53 @@ def add_friend():
     start_chat(spy_name, spy_age, spy_rating)
 
 
+def read_message():
+    item_number = 0
+    for friend in friends:
+        print("%d. %s" % (item_number + 1, friend['name']))
+        item_number = item_number + 1
+
+    ch = input("select friend index")
+
+    output_path = input("What is the name of the file?")
+
+    secret_text = Steganography.decode(output_path)
+
+    new_chat = {
+        "message": secret_text,
+        "time": datetime.now(),
+        "sent_by_me": False
+    }
+
+    friends[ch]['chats'].append(new_chat)
+
+    print("Your secret message has been saved!")
+
+
 def send_msg():
     item_number = 0
     for friend in friends:
-        print("%d %s"% (item_number + 1, friend['name']))
+        print("%d. %s" % (item_number + 1, friend['name']))
         item_number = item_number + 1
-    print("select freind")
+
+    ch = input("select friend index")
+
+    # msg = input("enter message")
+
+    original_image = input("What is the name of the image?")
+    output_path = "output.jpg"
+    text = input("What do you want to say? ")
+    Steganography.encode(original_image, output_path, text)
+
+    new_chat = {
+        "message": text,
+        "time": datetime.now(),
+        "sent_by_me": True
+    }
+
+    friends[ch]['chats'].append(new_chat)
+
+    print("Your secret message image is ready!")
 
 
 def start_chat(name, age, rating):
@@ -132,14 +176,15 @@ def start_chat(name, age, rating):
 
     # Show Menu
     menu_choices = "What do you want to do? \n 1. Add a status update \n 2. Add a friend \n 3. Send a secret message " \
-                   "\n 4. Read a secret message \n 5. Read Chats from a user \n 6. View Status \n "
+                   "\n 4. Read a secret message \n 5. View Status \n "
 
     ch = input(menu_choices)
 
     options = {1: add_status,
                2: add_friend,
                3: send_msg,
-               6: view_status,
+               4: read_message,
+               5: view_status,
 
                }
     options[int(ch)]()
