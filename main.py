@@ -8,10 +8,22 @@ current_status_message = ""
 new_friend = Spy(" ", " ", 0, 0.0)
 
 
+# color classes
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
+
 def get_name():
     """ Get Spy Name """
     global spy_name, sy_nm_len, spy_salutation, sy_sa_len, spy_full_name
-    spy_name = input("Welcome to spy chat, you must tell me your spy name first: ")
+    spy_name = input(bcolors.HEADER + "Welcome to spy chat, you must tell me your spy name first: " + bcolors.ENDC)
     sy_nm_len = len(spy_name)
     """ Get Spy Name Length """
     spy_salutation = input("Should I call you Mister or Miss?: ")
@@ -33,7 +45,7 @@ def get_age():
     try:
         spy_age = int(input("Enter your age: "))
     except Exception:
-        print("Error age not valid", end='\nEnter Age Again\n')
+        print(bcolors.WARNING + "Error age not valid" + bcolors.ENDC, end='\nEnter Age Again\n')
         get_age()
     check_age()
 
@@ -51,7 +63,7 @@ def get_rating():
 def show_error():
     global error
     error = True
-    print("Sorry You are not of the proper age to enter the spy community!")
+    print(bcolors.FAIL+"Sorry You are not of the proper age to enter the spy community!"+bcolors.ENDC)
 
 
 def check_age():
@@ -136,8 +148,9 @@ def read_message():
         except Exception:
             print('error exiting your entered output path invalid')
             exit()
-    print("Your secret message is " + str(secrettext))
-
+    print(bcolors.BOLD+"Your secret message is :" + str(secrettext)+bcolors.ENDC)
+    if secrettext == 'SOS' or secrettext == 'SAVE ME':
+        print(bcolors.OKGREEN+'HELP is on the way sending backup'+bcolors.ENDC)
     start_chat(spy_name, spy_age, spy_rating)
 
 
