@@ -1,17 +1,11 @@
 from spy_details import spy, Spy, friends, ChatMessage
 from stegano import lsb
 from datetime import datetime
-
+import csv
 STATUS_MESSAGES = ['My name is Bond, James Bond', 'Shaken, not stirred.', 'Keeping the British end up, Sir']
 current_status_message = ""
 
-new_friend = {
-        'name': '',
-        'salutation': '',
-        'age': 0,
-        'rating': 0.0,
-        'chats': []
-    }
+new_friend = Spy(" ", " ", 0, 0.0)
 
 
 def get_name():
@@ -86,31 +80,26 @@ def check_age():
 
 
 def add_status():
-    global status_msg
-    status_msg = input("Enter status: ")
+    spy.current_status_message = input("Enter status: ")
     print("status updated")
     start_chat(spy_name, spy_age, spy_rating)
 
 
 def view_status():
-    if len(spy_salutation) > 0:
-        print("Your status is " + status_msg)
-        start_chat(spy_name, spy_age, spy_rating)
-    else:
-        print("No status updated please add new status")
-        add_status()
+    print("Your status is " + str(spy.current_status_message))
+    start_chat(spy_name, spy_age, spy_rating)
 
 
 def add_friend():
 
-    new_friend['name'] = input("Please add your friend's name: ")
-    new_friend['salutation'] = input("Are they Mr. or Ms.?: ")
+    new_friend.name = input("Please add your friend's name: ")
+    new_friend.salutation = input("Are they Mr. or Ms.?: ")
 
-    new_friend['name'] = new_friend['salutation'] + " " + new_friend['name']
+    new_friend.name = new_friend.salutation + " " + new_friend.name
 
-    new_friend['age'] = input("Age?")
+    new_friend.age = input("Age?")
 
-    new_friend['rating'] = input("Spy rating?")
+    new_friend.rating = input("Spy rating?")
 
     friends.append(new_friend)
     print('Friend Added!')
@@ -149,6 +138,8 @@ def read_message():
             exit()
     print("Your secret message is " + str(secrettext))
 
+    start_chat(spy_name, spy_age, spy_rating)
+
 
 def select_a_friend():
     item_number = 0
@@ -168,17 +159,53 @@ def send_msg():
     text = input("What do you want to say? ")
 
     secret = lsb.hide("./input.png", text)
-    output = input('Name of output file: \n (Press end for default name)')
+    output = input('Name of output file: \n (Press enter for default name)')
     if len(output) == 0:
         secret.save("./secret.png")
+        print("Your secret message image is ready! with file name 'secret.png' ")
     else:
-        secret.save(output)
+        try:
+            secret.save(output)
+            print("Your secret message image is ready! with file name " + output)
+        except Exception:
+            print('enter valid extension')
 
     # Append chat to friend
     new_chat = ChatMessage(text, True)
     friends[ch].chats.append(new_chat)
 
-    print("Your secret message image is ready!")
+    start_chat(spy_name, spy_age, spy_rating)
+
+
+def exits():
+    print('Exiting, Hey don\'t forget to clear your secret image file and data')
+    exit(1)
+
+
+def store_friends_data():
+    # Saving Friends data
+    try:
+        with open('data.csv', 'wb') as csv_file:
+            writer = csv.writer(csv_file)
+            for key, value in friends.items():
+                writer.writerow([key, value])
+    except Exception:
+        print('error no chat data found \nYou need to chat send message first')
+
+    start_chat(spy_name, spy_age, spy_rating)
+
+
+def view_friends_data():
+    # Reading Friends Data from csv
+    try:
+        with open('data.csv', 'rb') as csv_file:
+            reader = csv.reader(csv_file)
+            friends_data = dict(reader)
+            print('Friends data ' + str(friends_data))
+    except Exception:
+        print('Error no data in csv found')
+
+    start_chat(spy_name, spy_age, spy_rating)
 
 
 def start_chat(name, age, rating):
@@ -188,17 +215,21 @@ def start_chat(name, age, rating):
 
     # Show Menu
     menu_choices = "What do you want to do? \n 1. Add a status update \n 2. Add a friend \n 3. Send a secret message " \
-                   "\n 4. Read a secret message \n 5. View Status \n "
+                   "\n 4. Read a secret message \n 5. View Status \n 6. Store Friends_Data \n 7. View Friends Data \n "\
+                   "8. Exit \n"
 
     ch = input(menu_choices)
 
-    options = {1: add_status,
+    options = {
+               1: add_status,
                2: add_friend,
                3: send_msg,
                4: read_message,
                5: view_status,
-
-               }
+               6: store_friends_data,
+               7: view_friends_data,
+               8: exits
+              }
     options[int(ch)]()
 
 
