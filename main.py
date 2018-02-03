@@ -1,10 +1,11 @@
-from spy_details import spy_name, spy_salutation, spy_rating, spy_age, spy_is_online
-from steganography.steganography import Steganography
+from spy_details import spy_name, spy_salutation, spy_rating, spy_age
+from stegano import lsb
 from datetime import datetime
 
 STATUS_MESSAGES = ['My name is Bond, James Bond', 'Shaken, not stirred.', 'Keeping the British end up, Sir']
 current_status_message = ""
 friends = []
+
 new_friend = {
         'name': '',
         'salutation': '',
@@ -121,26 +122,17 @@ def add_friend():
 
 
 def read_message():
-    item_number = 0
-    for friend in friends:
-        print("%d. %s" % (item_number + 1, friend['name']))
-        item_number = item_number + 1
 
-    ch = input("select friend index")
-
-    output_path = input("What is the name of the file?")
-
-    secret_text = Steganography.decode(output_path)
-
-    new_chat = {
-        "message": secret_text,
-        "time": datetime.now(),
-        "sent_by_me": False
-    }
-
-    friends[ch]['chats'].append(new_chat)
-
-    print("Your secret message has been saved!")
+    output_path = input("What is the name of the file? \n (Press enter to read default secret file)")
+    if len(output_path) == 0:
+        secrettext = lsb.reveal("./secret.png")
+    else:
+        try:
+            secrettext = lsb.reveal(output_path)
+        except Exception:
+            print('error exiting your entered output path invalid')
+            exit()
+    print("Your secret message is " + str(secrettext))
 
 
 def send_msg():
@@ -153,10 +145,16 @@ def send_msg():
 
     # msg = input("enter message")
 
-    original_image = input("What is the name of the image?")
-    output_path = "output.jpg"
+    # original_image = input("What is the name of the image?")
+
     text = input("What do you want to say? ")
-    Steganography.encode(original_image, output_path, text)
+    # Steganography.encode(original_image, output_path, text)
+    secret = lsb.hide("./input.png", text)
+    output = input('Name of output file: \n (Press end for default name)')
+    if len(output) == 0:
+        secret.save("./secret.png")
+    else:
+        secret.save(output)
 
     new_chat = {
         "message": text,
