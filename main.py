@@ -1,10 +1,9 @@
-from spy_details import spy_name, spy_salutation, spy_rating, spy_age
+from spy_details import spy, Spy, friends, ChatMessage
 from stegano import lsb
 from datetime import datetime
 
 STATUS_MESSAGES = ['My name is Bond, James Bond', 'Shaken, not stirred.', 'Keeping the British end up, Sir']
 current_status_message = ""
-friends = []
 
 new_friend = {
         'name': '',
@@ -121,34 +120,53 @@ def add_friend():
     start_chat(spy_name, spy_age, spy_rating)
 
 
+def append_to_friend(secret_text, sender):
+    new_chat = {
+        "message": secret_text,
+        "time": datetime.now(),
+        "sent_by_me": False
+    }
+
+    friends[sender]['chats'].append(new_chat)
+
+
 def read_message():
 
     output_path = input("What is the name of the file? \n (Press enter to read default secret file)")
+    # sender = select_a_friend()
+
     if len(output_path) == 0:
         secrettext = lsb.reveal("./secret.png")
+        # new_chat = ChatMessage(secrettext, False)
+        # friends[sender].chats.append(new_chat)
     else:
         try:
             secrettext = lsb.reveal(output_path)
+            # new_chat = ChatMessage(secrettext, False)
+            # friends[sender].chats.append(new_chat)
         except Exception:
             print('error exiting your entered output path invalid')
             exit()
     print("Your secret message is " + str(secrettext))
 
 
-def send_msg():
+def select_a_friend():
     item_number = 0
     for friend in friends:
-        print("%d. %s" % (item_number + 1, friend['name']))
+        print("%d. %s" % (item_number + 1, friend.name))
         item_number = item_number + 1
 
     ch = input("select friend index")
 
-    # msg = input("enter message")
+    friend_choice_position = int(ch) - 1
 
-    # original_image = input("What is the name of the image?")
+    return friend_choice_position
 
+
+def send_msg():
+    ch = select_a_friend()
     text = input("What do you want to say? ")
-    # Steganography.encode(original_image, output_path, text)
+
     secret = lsb.hide("./input.png", text)
     output = input('Name of output file: \n (Press end for default name)')
     if len(output) == 0:
@@ -156,13 +174,9 @@ def send_msg():
     else:
         secret.save(output)
 
-    new_chat = {
-        "message": text,
-        "time": datetime.now(),
-        "sent_by_me": True
-    }
-
-    friends[ch]['chats'].append(new_chat)
+    # Append chat to friend
+    new_chat = ChatMessage(text, True)
+    friends[ch].chats.append(new_chat)
 
     print("Your secret message image is ready!")
 
@@ -187,6 +201,12 @@ def start_chat(name, age, rating):
                }
     options[int(ch)]()
 
+
+spy_name = spy.name
+spy_salutation = spy.salutation
+spy_age = spy.age
+spy_rating = spy.rating
+spy_is_online = spy.is_online
 
 question = "Do you want to continue as " + spy_salutation + " " + spy_name + " (Y/N)? "
 existing = input(question)
