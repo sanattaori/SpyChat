@@ -26,7 +26,7 @@ class ChatMessage:
 # spy object with default bond spy
 spy = Spy('Bond', 'Mr.', 24, 8)
 
-# spy default freinds
+# spy default friends
 friend_one = Spy('Ravi', 'Mr.', 19, 6)
 friend_two = Spy('Rohit', 'Mr.', 20, 5.39)
 friend_three = Spy('Rani', 'Mr.', 21, 5.95)

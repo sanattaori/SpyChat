@@ -2,11 +2,6 @@ from spy_details import spy, Spy, friends, ChatMessage
 from stegano import lsb
 import csv
 
-current_status_message = ""
-
-new_friend = Spy(" ", " ", 0, 0.0)
-
-
 # color classes
 class bcolors:
     HEADER = '\033[95m'
@@ -35,28 +30,30 @@ def get_name():
         print("Incorrect Values enter name and salutation again", end='\n')
         get_name()
     else:
-        print("Alright " + spy_full_name.capitalize() + " I'd like to know a little bit more about...", end='\n')
+        print(bcolors.HEADER+"Alright " + spy_full_name.capitalize() + " I'd like to know a little bit more about..."+bcolors.ENDC, end='\n')
 
 
-def get_age():
+def get_age(c_name,c_rating):
     """ Get Spy Age  """
     global spy_age
     try:
         spy_age = int(input("Enter your age: "))
     except Exception:
         print(bcolors.WARNING + "Error age not valid" + bcolors.ENDC, end='\nEnter Age Again\n')
-        get_age()
-    check_age()
+        get_age(c_name,c_rating)
+    check_age(c_age=spy_age, check_rating=c_rating, c_name=c_name)
 
 
-def get_rating():
+def get_rating(check_rating, c_name):
     """ Get Spy Rating  """
     global spy_rating
     try:
-        spy_rating = float(input("Please enter your spy rating between 0 to 5 : "))
+        check_rating = float(input("Please enter your " + c_name + " rating between 0 to 5 : "))
+        spy_rating = check_rating
     except Exception:
-        print("Rating not valid", end='\nPlease try Again\n')
-        get_rating()
+        print(bcolors.FAIL+"Rating not valid" + bcolors.ENDC, end='\nPlease try Again\n')
+        get_rating(check_rating, c_name)
+    return spy_rating
 
 
 def show_error():
@@ -65,29 +62,27 @@ def show_error():
     print(bcolors.FAIL+"Sorry You are not of the proper age to enter the spy community!"+bcolors.ENDC)
 
 
-def check_age():
-    # Check Spy Age
-    global spy_is_online
-    spy_is_online = False
+def check_age(c_age, check_rating, c_name):
+    # Check age
 
-    if 12 < spy_age < 50:
-        print("Valid Spy, Welcome!")
-        get_rating()
-
-        if spy_rating > 4.5:
-            print('Great ace!')
+    if 12 < c_age < 50:
+        print("Valid " + c_name + ", Welcome!")
+        check_rating = get_rating(check_rating, c_name)
+        print(check_rating)
+        if check_rating > 4.5:
+            print('Great ace! '+c_name)
         # Chained Comparison
-        elif 3.5 < spy_rating <= 4.5:
-            print('You are one of the good ones.')
-        elif 2.5 <= spy_rating <= 3.5:
-            print('You can always do better')
+        elif 3.5 < check_rating <= 4.5:
+            print('You are one of the good '+c_name)
+        elif 2.5 <= check_rating <= 3.5:
+            print('You can always do better '+c_name)
         else:
-            print('We can always use somebody to help in the office.')
+            print('We can always use somebody to help you ' + c_name + ' in the office.')
 
-        spy_is_online = True
     else:
-        print("Sorry You are not of the proper age to enter the spy community!\n Enter age bw 12 to 50")
-        get_age()
+        print(bcolors.FAIL+"Sorry You are not of the proper age to enter the " + c_name + " Community!\nEnter age bw "
+                                                                                          "12 to 50" + bcolors.ENDC)
+        get_age(c_name,check_rating)
 
 
 def add_status():
@@ -102,32 +97,21 @@ def view_status():
 
 
 def add_friend():
-
+    new_friend = Spy(" ", " ", 0, 0.0)
     new_friend.name = input("Please add your friend's name: ")
     new_friend.salutation = input("Are they Mr. or Ms.?: ")
 
     new_friend.name = new_friend.salutation + " " + new_friend.name
 
-    new_friend.age = input("Age?")
-
-    new_friend.rating = input("Spy rating?")
-
+    new_friend.age = int(input("Age?"))
+    # new_friend.rating = float(input("Spy rating?"))
+    check_age(c_age=new_friend.age, c_name="friend", check_rating=new_friend.rating)
     friends.append(new_friend)
     print('Friend Added!')
 
     print('You have %d friends' % len(friends))
 
     start_chat(spy_name, spy_age, spy_rating)
-
-
-# def append_to_friend(secret_text, sender):
-#     new_chat = {
-#         "message": secret_text,
-#         "time": datetime.now(),
-#         "sent_by_me": False
-#     }
-#
-#     friends[sender]['chats'].append(new_chat)
 
 
 def read_message():
@@ -145,11 +129,11 @@ def read_message():
             # new_chat = ChatMessage(secrettext, False)
             # friends[sender].chats.append(new_chat)
         except Exception:
-            print('error exiting your entered output path invalid')
+            print(bcolors.WARNING+'error exiting your entered output path invalid'+bcolors.ENDC)
             exit()
     print(bcolors.BOLD+"Your secret message is :" + str(secrettext)+bcolors.ENDC)
     if secrettext == 'SOS' or secrettext == 'SAVE ME':
-        print(bcolors.OKGREEN+'HELP is on the way sending backup'+bcolors.ENDC)
+        print(bcolors.WARNING + 'HELP is on the way sending backup' + bcolors.ENDC)
     start_chat(spy_name, spy_age, spy_rating)
 
 
@@ -174,13 +158,13 @@ def send_msg():
     output = input('Name of output file: \n (Press enter for default name)')
     if len(output) == 0:
         secret.save("./secret.png")
-        print("Your secret message image is ready! with file name 'secret.png' ")
+        print(bcolors.BOLD+"Your secret message image is ready! with file name 'secret.png' "+bcolors.ENDC)
     else:
         try:
             secret.save(output)
-            print("Your secret message image is ready! with file name " + output)
+            print(bcolors.BOLD+"Your secret message image is ready! with file name " + output + bcolors.ENDC)
         except Exception:
-            print('enter valid extension')
+            print(bcolors.WARNING+'Please Enter valid extension'+bcolors.ENDC)
 
     # Append chat to friend
     new_chat = ChatMessage(text, True)
@@ -190,7 +174,7 @@ def send_msg():
 
 
 def exits():
-    print('Exiting, Hey don\'t forget to clear your secret image file and data')
+    print(bcolors.OKGREEN+'Exiting, Hey don\'t forget to clear your secret image file and data'+bcolors.ENDC)
     exit(1)
 
 
@@ -202,7 +186,7 @@ def store_friends_data():
             for key, value in friends.items():
                 writer.writerow([key, value])
     except Exception:
-        print('error no chat data found \nYou need to chat send message first')
+        print(bcolors.FAIL + 'error no chat data found \nYou need to chat send message first' + bcolors.ENDC)
 
     start_chat(spy_name, spy_age, spy_rating)
 
@@ -215,7 +199,7 @@ def view_friends_data():
             friends_data = dict(reader)
             print('Friends data ' + str(friends_data))
     except Exception:
-        print('Error no data in csv found')
+        print(bcolors.FAIL+'Error no data in csv found'+bcolors.ENDC)
 
     start_chat(spy_name, spy_age, spy_rating)
 
@@ -226,9 +210,9 @@ def start_chat(name, age, rating):
     # print("Authentication Complete. Welcome %s, age: %d, rating : %.2f." % (name, age, rating))
 
     # Show Menu
-    menu_choices = "What do you want to do? \n 1. Add a status update \n 2. Add a friend \n 3. Send a secret message " \
+    menu_choices = bcolors.OKGREEN+" What do you want to do? \n 1. Add a status update \n 2. Add a friend \n 3. Send a secret message " \
                    "\n 4. Read a secret message \n 5. View Status \n 6. Store Friends_Data \n 7. View Friends Data \n "\
-                   "8. Exit \n"
+                   "8. Exit \n" + bcolors.ENDC
 
     ch = input(menu_choices)
 
@@ -251,8 +235,8 @@ if __name__ == '__main__':
     spy_age = spy.age
     spy_rating = spy.rating
     spy_is_online = spy.is_online
-
-    question = "Do you want to continue as " + spy_salutation + " " + spy_name + " (Y/N)? "
+    print(bcolors.BOLD + 'Welcome to spy chat' + bcolors.ENDC)
+    question = "Do you want to continue as " +bcolors.UNDERLINE + bcolors.OKGREEN + spy_salutation + " " + spy_name + bcolors.ENDC + " (Y/N)? "
     existing = input(question)
     print(existing)
     if existing == "Y" or existing == "y":
@@ -266,6 +250,6 @@ if __name__ == '__main__':
 
         get_name()
 
-        get_age()
+        get_age("spy", c_rating=spy_rating)
 
         start_chat(spy_name, spy_age, spy_rating)
