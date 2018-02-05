@@ -1,8 +1,7 @@
 from spy_details import spy, Spy, friends, ChatMessage
 from stegano import lsb
-from datetime import datetime
 import csv
-STATUS_MESSAGES = ['My name is Bond, James Bond', 'Shaken, not stirred.', 'Keeping the British end up, Sir']
+
 current_status_message = ""
 
 new_friend = Spy(" ", " ", 0, 0.0)
@@ -121,14 +120,14 @@ def add_friend():
     start_chat(spy_name, spy_age, spy_rating)
 
 
-def append_to_friend(secret_text, sender):
-    new_chat = {
-        "message": secret_text,
-        "time": datetime.now(),
-        "sent_by_me": False
-    }
-
-    friends[sender]['chats'].append(new_chat)
+# def append_to_friend(secret_text, sender):
+#     new_chat = {
+#         "message": secret_text,
+#         "time": datetime.now(),
+#         "sent_by_me": False
+#     }
+#
+#     friends[sender]['chats'].append(new_chat)
 
 
 def read_message():
@@ -246,28 +245,27 @@ def start_chat(name, age, rating):
     options[int(ch)]()
 
 
-spy_name = spy.name
-spy_salutation = spy.salutation
-spy_age = spy.age
-spy_rating = spy.rating
-spy_is_online = spy.is_online
+if __name__ == '__main__':
+    spy_name = spy.name
+    spy_salutation = spy.salutation
+    spy_age = spy.age
+    spy_rating = spy.rating
+    spy_is_online = spy.is_online
 
-question = "Do you want to continue as " + spy_salutation + " " + spy_name + " (Y/N)? "
-existing = input(question)
-print(existing)
-if existing == "Y" or existing == "y":
-    start_chat(spy_name, spy_age, spy_rating)
-else:
-    spy_name = ''
-    spy_salutation = ''
-    spy_age = 0
-    spy_rating = 0.0
-    spy_is_online = False
+    question = "Do you want to continue as " + spy_salutation + " " + spy_name + " (Y/N)? "
+    existing = input(question)
+    print(existing)
+    if existing == "Y" or existing == "y":
+        start_chat(spy_name, spy_age, spy_rating)
+    else:
+        spy_name = ''
+        spy_salutation = ''
+        spy_age = 0
+        spy_rating = 0.0
+        spy_is_online = False
 
-    get_name()
+        get_name()
 
-    get_age()
+        get_age()
 
-    # check_age()
-
-    start_chat(spy_name, spy_age, spy_rating)
+        start_chat(spy_name, spy_age, spy_rating)
