@@ -1,9 +1,8 @@
 from spy_details import spy, Spy, friends, ChatMessage
 from stegano import lsb
 import csv
-from colorama import init
+from colorama import init, Fore, Style
 init()
-from colorama import Fore, Back, Style
 
 # color classes
 class bcolors:
@@ -20,7 +19,7 @@ class bcolors:
 def get_name():
     """ Get Spy Name """
     global spy_name, sy_nm_len, spy_salutation, sy_sa_len, spy_full_name
-    spy_name = input(bcolors.HEADER + "Welcome to spy chat, you must tell me your spy name first: "  )
+    spy_name = input("Welcome to spy chat, you must tell me your spy name first: "  )
     sy_nm_len = len(spy_name)
     """ Get Spy Name Length """
     spy_salutation = input("Should I call you Mister or Miss?: ")
@@ -85,7 +84,7 @@ def check_age(c_age, check_rating, c_name):
     else:
         print(bcolors.FAIL+"Sorry You are not of the proper age to enter the " + c_name + " Community!\nEnter age bw "
                                                                                           "12 to 50"  )
-        get_age(c_name,check_rating)
+        get_age(c_name, check_rating)
 
 
 def add_status():
@@ -178,7 +177,7 @@ def send_msg():
 
 def exits():
     print(bcolors.OKGREEN+'Exiting, Hey don\'t forget to clear your secret image file and data')
-    exit(1)
+    exit()
 
 
 def store_friends_data():
@@ -213,7 +212,7 @@ def start_chat(name, age, rating):
     # print("Authentication Complete. Welcome %s, age: %d, rating : %.2f." % (name, age, rating))
 
     # Show Menu
-    menu_choices = bcolors.OKGREEN+" What do you want to do? \n 1. Add a status update \n 2. Add a friend \n 3. Send a secret message " \
+    menu_choices = " What do you want to do? \n 1. Add a status update \n 2. Add a friend \n 3. Send a secret message " \
                    "\n 4. Read a secret message \n 5. View Status \n 6. Store Friends_Data \n 7. View Friends Data \n "\
                    "8. Exit \n"  
 
@@ -238,10 +237,10 @@ if __name__ == '__main__':
     spy_age = spy.age
     spy_rating = spy.rating
     spy_is_online = spy.is_online
-    print(Fore.GREEN + 'Welcome to spy chat'  )
-    question = " Do you want to continue as " + spy_salutation + " " + spy_name + "(Y/N)? "
+    print(Fore.LIGHTWHITE_EX + 'Welcome to spy chat'  )
+    question = "Do you want to continue as " + spy_salutation + " " + spy_name + "(Y/N)? "
     existing = input(question)
-    print(existing)
+    # print(existing)
     if existing == "Y" or existing == "y":
         start_chat(spy_name, spy_age, spy_rating)
     else:
